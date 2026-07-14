@@ -24,16 +24,24 @@ module.exports = async function handler(req, res) {
     created_at: new Date().toISOString()
   };
 
-  const response = await fetch(`${supabaseUrl}/rest/v1/lotto_draws`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'apikey': serviceRoleKey,
-      'Authorization': `Bearer ${serviceRoleKey}`,
-      'Prefer': 'return=representation'
-    },
-    body: JSON.stringify(payload)
-  });
+  let response;
+  try {
+    response = await fetch(`${supabaseUrl}/rest/v1/lotto_draws`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': serviceRoleKey,
+        'Authorization': `Bearer ${serviceRoleKey}`,
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(payload)
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Failed to reach Supabase',
+      details: error.message
+    });
+  }
 
   const text = await response.text();
   let data = null;
@@ -47,7 +55,8 @@ module.exports = async function handler(req, res) {
   if (!response.ok) {
     return res.status(response.status).json({
       error: data?.message || data?.error || 'Supabase insert failed',
-      details: data
+      details: data,
+      status: response.status
     });
   }
 
