@@ -311,6 +311,13 @@
     }
 
     drawButton.addEventListener('click', async () => {
+      if (typeof gtag === 'function') {
+        gtag('event', 'lotto_draw', {
+          event_category: 'engagement',
+          event_label: '번호 추첨하기'
+        });
+      }
+
       currentNumbers = makeNumbers();
       ascending = true;
       showNumbers(currentNumbers);
