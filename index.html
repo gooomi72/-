@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Lotto Number Generator</title>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-H9H92288YH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-H9H92288YH');
+  </script>
+  <style>
+    :root {
+      --blue: #0066cc;
+      --blue-dark: #2997ff;
+      --ink: #1d1d1f;
+      --paper: #f5f5f7;
+      --muted: #6e6e73;
+      --success: #1d9b5f;
+      --danger: #d92d20;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #fff;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Malgun Gothic", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button { font: inherit; }
+    .global-nav {
+      height: 44px;
+      background: #000;
+      color: #f5f5f7;
+      display: flex;
+      align-items: center;
+    }
+    .nav-inner, .sub-inner {
+      width: min(980px, calc(100% - 44px));
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand { font-size: 18px; font-weight: 600; letter-spacing: -.03em; }
+    .brand-mark { font-size: 17px; margin-right: 7px; }
+    .nav-copy { font-size: 12px; color: #aaa; }
+    .sub-nav {
+      height: 52px;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: rgba(245, 245, 247, .82);
+      backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid rgba(0, 0, 0, .08);
+    }
+    .sub-inner { height: 100%; }
+    .sub-title { font-size: 21px; font-weight: 600; letter-spacing: -.03em; }
+    .sub-link { font-size: 12px; color: var(--muted); }
+    .hero {
+      min-height: 430px;
+      padding: 80px 24px 66px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .eyebrow { margin: 0 0 12px; color: #bf4800; font-size: 14px; font-weight: 600; }
+    h1 {
+      max-width: 850px;
+      margin: 0;
+      font-size: clamp(42px, 7vw, 64px);
+      line-height: 1.04;
+      letter-spacing: -.055em;
+      font-weight: 600;
+    }
+    .lead {
+      margin: 20px 0 0;
+      font-size: clamp(20px, 3vw, 28px);
+      line-height: 1.25;
+      letter-spacing: -.025em;
+      color: #424245;
+    }
+    .stage {
+      min-height: 500px;
+      padding: 76px 24px 70px;
+      text-align: center;
+      background: #000;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .stage h2 {
+      margin: 0;
+      font-size: clamp(32px, 5vw, 48px);
+      letter-spacing: -.045em;
+      line-height: 1.08;
+      font-weight: 600;
+    }
+    .stage-copy {
+      margin: 12px 0 22px;
+      color: #a1a1a6;
+      font-size: 17px;
+      line-height: 1.47;
+    }
+    .status {
+      min-height: 24px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: #c7c7cc;
+    }
+    .status[data-state="success"] { color: #78d9a4; }
+    .status[data-state="error"] { color: #ff9f96; }
+    .balls {
+      min-height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .ball {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #f5f5f7;
+      color: #1d1d1f;
+      font-size: 26px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      box-shadow: rgba(0, 0, 0, .22) 3px 5px 30px;
+      animation: arrive .55s cubic-bezier(.2, .8, .2, 1) both;
+    }
+    .ball:last-child { background: var(--blue); color: #fff; }
+    @keyframes arrive {
+      from { opacity: 0; transform: translateY(24px) scale(.78); }
+      to { opacity: 1; transform: none; }
+    }
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 48px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .primary, .secondary {
+      min-height: 44px;
+      padding: 11px 24px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 17px;
+      transition: transform .15s, background .15s, color .15s;
+    }
+    .primary {
+      border: 1px solid var(--blue);
+      background: var(--blue);
+      color: #fff;
+    }
+    .primary:hover { background: #0071e3; }
+    .primary:active, .secondary:active { transform: scale(.95); }
+    .primary:focus-visible, .secondary:focus-visible {
+      outline: 2px solid #0071e3;
+      outline-offset: 3px;
+    }
+    .secondary {
+      border: 1px solid var(--blue-dark);
+      background: transparent;
+      color: var(--blue-dark);
+    }
+    .secondary:hover { background: var(--blue-dark); color: #fff; }
+    .secondary[hidden] { display: none; }
+    .info {
+      padding: 76px 24px;
+      background: var(--paper);
+      text-align: center;
+    }
+    .info h3 {
+      margin: 0 0 13px;
+      font-size: 32px;
+      letter-spacing: -.04em;
+    }
+    .info p {
+      max-width: 620px;
+      margin: auto;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.5;
+    }
+    footer {
+      padding: 28px 24px;
+      background: var(--paper);
+      border-top: 1px solid #d2d2d7;
+      color: #6e6e73;
+      font-size: 12px;
+    }
+    .footer-inner { max-width: 980px; margin: auto; }
+    @media (max-width: 640px) {
+      .nav-copy, .sub-link { display: none; }
+      .hero { min-height: 370px; padding: 64px 22px 52px; }
+      .stage { min-height: 520px; padding: 62px 18px; }
+      .balls { gap: 9px; max-width: 330px; }
+      .ball { width: 62px; height: 62px; font-size: 22px; }
+      .stage-copy { margin-bottom: 16px; }
+      .status { font-size: 13px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto !important; }
+      .ball { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="global-nav" aria-label="상단 메뉴">
+    <div class="nav-inner">
+      <div class="brand"><span class="brand-mark">◆</span>Lotto</div>
+      <div class="nav-copy">오늘의 행운, 한 번의 클릭으로.</div>
+    </div>
+  </nav>
+
+  <div class="sub-nav">
+    <div class="sub-inner">
+      <div class="sub-title">로또 추첨기</div>
+      <div class="sub-link">1부터 45까지 · 중복 없이 6개</div>
+    </div>
+  </div>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">오늘의 행운</p>
+      <h1>당신만의 숫자 여섯 개.<br>깔끔하게 뽑아드립니다.</h1>
+      <p class="lead">한 번의 클릭으로 1부터 45 사이의 숫자를 추첨해보세요.</p>
+    </section>
+
+    <section class="stage" id="draw-area">
+      <h2 id="result-title">추첨을 시작해볼까요?</h2>
+      <p class="stage-copy" id="result-copy">모든 번호는 공정하게 무작위로 선택됩니다.</p>
+      <div class="status" id="status" aria-live="polite"></div>
+      <div class="balls" id="balls" aria-live="polite"></div>
+      <div class="actions">
+        <button class="primary" id="draw-button" type="button">번호 추첨하기</button>
+        <button class="secondary" id="sort-button" type="button" hidden>오름차순 보기</button>
+      </div>
+    </section>
+
+    <section class="info">
+      <h3>중복 없이, 정확하게.</h3>
+      <p>1부터 45까지의 숫자 중에서 여섯 개를 무작위로 뽑습니다. 마지막에 나온 결과는 Supabase DB에도 저장할 수 있게 연결해두었습니다.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      이 페이지는 추첨 결과를 기록용으로 저장할 수 있도록 설계되었습니다.
+    </div>
+  </footer>
+
+  <script>
+    const balls = document.querySelector('#balls');
+    const drawButton = document.querySelector('#draw-button');
+    const sortButton = document.querySelector('#sort-button');
+    const title = document.querySelector('#result-title');
+    const copy = document.querySelector('#result-copy');
+    const status = document.querySelector('#status');
+
+    let currentNumbers = [];
+    let ascending = true;
+
+    function setStatus(message, state = '') {
+      status.textContent = message;
+      status.dataset.state = state;
+    }
+
+    function makeNumbers() {
+      const pool = Array.from({ length: 45 }, (_, i) => i + 1);
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+      return pool.slice(0, 6).sort((a, b) => a - b);
+    }
+
+    function showNumbers(numbers) {
+      balls.innerHTML = numbers
+        .map((number, index) => `<div class="ball" style="animation-delay:${index * 70}ms" aria-label="${number}번">${number}</div>`)
+        .join('');
+    }
+
+    async function saveDraw(numbers) {
+      const response = await fetch('/api/save-draw', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ numbers })
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        const detail = data.details ? (typeof data.details === 'string' ? data.details : JSON.stringify(data.details)) : '';
+        throw new Error([data.error, detail].filter(Boolean).join(' · ') || '저장에 실패했어요.');
+      }
+      return data;
+    }
+
+    drawButton.addEventListener('click', async () => {
+      currentNumbers = makeNumbers();
+      ascending = true;
+      showNumbers(currentNumbers);
+      title.textContent = '오늘의 로또 번호';
+      copy.textContent = '무작위로 뽑은 6개의 번호입니다.';
+      drawButton.textContent = '다시 추첨하기';
+      sortButton.textContent = '오름차순 보기';
+      sortButton.hidden = false;
+
+      setStatus('Supabase에 저장 중...');
+      drawButton.disabled = true;
+      sortButton.disabled = true;
+
+      try {
+        const result = await saveDraw(currentNumbers);
+        setStatus(`저장 완료 · ${result.id ? `기록 ID ${result.id}` : 'DB에 저장되었습니다.'}`, 'success');
+      } catch (error) {
+        setStatus(`저장 실패 · ${error.message}`, 'error');
+      } finally {
+        drawButton.disabled = false;
+        sortButton.disabled = false;
+      }
+    });
+
+    sortButton.addEventListener('click', () => {
+      ascending = !ascending;
+      const ordered = [...currentNumbers].sort((a, b) => ascending ? a - b : b - a);
+      showNumbers(ordered);
+      sortButton.textContent = ascending ? '내림차순 보기' : '오름차순 보기';
+    });
+  </script>
+</body>
+</html>
